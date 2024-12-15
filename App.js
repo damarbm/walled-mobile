@@ -1,16 +1,11 @@
 import { useState } from "react";
-import {
-  Image,
-  StyleSheet,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { Image, StyleSheet, TextInput, View } from "react-native";
+import Button from "./components/Button";
+import Input from "./components/Input";
 
 export default function App() {
-  const [text, onChangeText] = useState("");
-  const [number, onChangeNumber] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
   return (
     <View
@@ -29,22 +24,21 @@ export default function App() {
       <View style={styles.inputWrapper}>
         <TextInput
           style={styles.input}
-          value={text}
-          onChangeText={onChangeText}
+          value={email}
+          onChangeText={setEmail}
           placeholder="Email"
           keyboardType="email-address"
         />
         <TextInput
           style={styles.input}
-          onChangeText={onChangeNumber}
-          value={number}
+          value={password}
+          onChangeText={setPassword}
           placeholder="Password"
           secureTextEntry
         />
       </View>
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Login</Text>
-      </TouchableOpacity>
+      <Input label="Notes" />
+      <Button text="Login" />
     </View>
   );
 }
@@ -70,18 +64,5 @@ const styles = StyleSheet.create({
     borderColor: "transparent",
     fontWeight: "600",
     borderRadius: 10,
-  },
-  button: {
-    marginTop: 54,
-    backgroundColor: "#19918F",
-    width: "90%",
-    paddingVertical: 12,
-    borderRadius: 10,
-    boxShadow: "0px 0px 10px 0px #19918F",
-  },
-  buttonText: {
-    color: "#ffffff",
-    textAlign: "center",
-    fontWeight: 700,
   },
 });
