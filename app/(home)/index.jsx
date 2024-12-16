@@ -5,7 +5,7 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import Feather from "@expo/vector-icons/Feather";
 
 import useFetch from "../../hooks/useFetch";
-import { getJwtAsyncStorage } from "../../utils";
+import { getSecureStore } from "../../utils";
 
 function TransactionItem({ transaction, lastChild }) {
   const { type, date, amount, address } = transaction;
@@ -83,12 +83,12 @@ export default function Home() {
     jwtToken
   );
 
-  const toggleBalance = () => {
+  const toggleShowBalance = () => {
     setShowBalance((prev) => !prev);
   };
 
   useEffect(() => {
-    getJwtAsyncStorage(setJwtToken);
+    getSecureStore("token", setJwtToken);
   }, []);
 
   return (
@@ -101,8 +101,8 @@ export default function Home() {
           headerTitle: (props) => (
             <LogoTitle
               {...props}
-              name={profile?.data?.name}
-              avatar={profile?.data?.avatar_url}
+              name={profile?.name}
+              avatar={profile?.avatar_url}
             />
           ),
         }}
@@ -110,7 +110,7 @@ export default function Home() {
       <View style={styles.introWrapper}>
         <View style={styles.introTextWrapper}>
           <Text style={styles.greetings}>
-            Good Morning, {profile?.data?.name.split(" ")[0]}
+            Good Morning, {profile?.name?.split(" ")[0]}
           </Text>
           <Text style={styles.description}>
             Check all your incoming and outgoing transactions here
@@ -124,7 +124,7 @@ export default function Home() {
       <View style={styles.accountCard}>
         <Text style={{ color: "#ffffff" }}>Account No.</Text>
         <Text style={{ color: "#ffffff", fontWeight: 600 }}>
-          {9000 + parseInt(profile?.data?.id)}
+          {9000 + parseInt(profile?.id)}
         </Text>
       </View>
       <View style={styles.balanceCard}>
@@ -140,25 +140,22 @@ export default function Home() {
               >
                 IDR{" "}
                 {showBalance
-                  ? profile?.data?.balance?.replace(
-                      /(\d)(?=(\d{3})+(?!\d))/g,
-                      "$1."
-                    )
-                  : "*".repeat(profile?.data?.balance.length)}
+                  ? profile?.balance?.replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.")
+                  : "*".repeat(profile?.balance?.length)}
               </Text>
               {showBalance ? (
                 <Ionicons
                   name="eye-outline"
                   size={24}
                   color="grey"
-                  onPress={() => toggleBalance()}
+                  onPress={() => toggleShowBalance()}
                 />
               ) : (
                 <Ionicons
                   name="eye-off-outline"
                   size={24}
                   color="grey"
-                  onPress={() => toggleBalance()}
+                  onPress={() => toggleShowBalance()}
                 />
               )}
             </View>
@@ -177,12 +174,12 @@ export default function Home() {
             borderTopWidth: StyleSheet.hairlineWidth,
           }}
         >
-          {transactions?.data?.map((transaction, index) => {
+          {transactions?.map((transaction, index) => {
             return (
               <TransactionItem
                 key={transaction.id}
                 transaction={transaction}
-                lastChild={index === transactions?.data?.length - 1}
+                lastChild={index === transactions?.length - 1}
               />
             );
           })}

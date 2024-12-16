@@ -1,11 +1,13 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 
-export const getJwtAsyncStorage = async (setState) => {
-  try {
-    const jsonValue = await AsyncStorage.getItem("jwt");
+export const saveSecureStore = async (key, value) => {
+  await SecureStore.setItemAsync(key, value);
+};
 
-    return jsonValue != null ? setState(JSON.parse(jsonValue)) : null;
-  } catch (error) {
-    console.error(error);
+export const getSecureStore = async (key, setState) => {
+  let result = await SecureStore.getItemAsync(key);
+
+  if (result) {
+    setState(result);
   }
 };

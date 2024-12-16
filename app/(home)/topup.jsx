@@ -2,11 +2,12 @@ import { Stack, useRouter } from "expo-router";
 import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
 import Feather from "@expo/vector-icons/Feather";
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 import NoteInput from "../../components/NoteInput";
 import AmountInput from "../../components/AmountInput";
 import Button from "../../components/Button";
-import { getJwtAsyncStorage } from "../../utils";
+import { getSecureStore } from "../../utils";
 
 function LogoTitle() {
   const router = useRouter();
@@ -41,26 +42,28 @@ export default function Topup() {
 
   const handleTopUp = async () => {
     try {
-      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/topup`, {
-        method: "PATCH",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${jwtToken}`,
-        },
-        body: JSON.stringify({ amount }),
-      });
+      const response = await axios.patch(
+        `${process.env.EXPO_PUBLIC_API_URL}/topup`,
+        { amount },
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${jwtToken}`,
+          },
+        }
+      );
 
       if (response.status === 200) {
         setAmount(0);
       }
     } catch (error) {
-      console.error(error);
+      console.error(error.response.data);
     }
   };
 
   useEffect(() => {
-    getJwtAsyncStorage(setJwtToken);
+    getSecureStore("token", setJwtToken);
   }, []);
 
   return (

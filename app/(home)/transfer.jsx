@@ -13,7 +13,7 @@ import NoteInput from "../../components/NoteInput";
 import AmountInput from "../../components/AmountInput";
 import Button from "../../components/Button";
 import useFetch from "../../hooks/useFetch";
-import { getJwtAsyncStorage } from "../../utils";
+import { getSecureStore } from "../../utils";
 
 function LogoTitle() {
   const router = useRouter();
@@ -50,7 +50,7 @@ export default function Transfer() {
   );
 
   useEffect(() => {
-    getJwtAsyncStorage(setJwtToken);
+    getSecureStore("token", setJwtToken);
   }, []);
 
   return (

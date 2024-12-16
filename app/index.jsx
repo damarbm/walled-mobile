@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { Image, StyleSheet, Text, TextInput, View } from "react-native";
 import { Link, useRouter } from "expo-router";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { z } from "zod";
+import axios from "axios";
 
 import Button from "../components/Button";
+import { saveSecureStore } from "../utils";
 
 const LOGIN_SCHEMA = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -17,15 +18,8 @@ export default function Index() {
     password: "",
   });
   const [errors, setErrors] = useState({ email: "", password: "" });
+  const [serverError, setServerError] = useState("");
   const router = useRouter();
-
-  const storeData = async (value) => {
-    try {
-      await AsyncStorage.setItem("jwt", JSON.stringify(value));
-    } catch (error) {
-      console.error(error);
-    }
-  };
 
   const onChangeText = (state, value) => {
     setLoginForm({ ...loginForm, [state]: value });
@@ -42,25 +36,22 @@ export default function Index() {
     try {
       LOGIN_SCHEMA.parse(loginForm);
 
-      const response = await fetch(
+      const response = await axios.post(
         `${process.env.EXPO_PUBLIC_API_URL}/auth/login`,
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(loginForm),
-        }
+        loginForm
       );
 
-      const data = await response.json();
-
       if (response.status === 200) {
-        await storeData(data.data.token);
+        saveSecureStore("token", response.data.data.token);
         router.replace("/(home)");
       }
     } catch (error) {
+      if (error?.response) {
+        setServerError(error.response.data.message);
+
+        return;
+      }
+
       console.error(error);
     }
   };
@@ -80,6 +71,7 @@ export default function Index() {
         source={require("../assets/logo.png")}
         style={styles.logo}
       />
+      {serverError && <Text style={{ color: "red" }}>{serverError}</Text>}
       <View style={styles.inputWrapper}>
         <View>
           <TextInput
