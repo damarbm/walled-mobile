@@ -1,5 +1,6 @@
 import { useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
+import axios from "axios";
 
 function useFetch(url, jwtToken) {
   const [data, setData] = useState([]);
@@ -8,14 +9,11 @@ function useFetch(url, jwtToken) {
 
   const fetchData = async (url) => {
     try {
-      const response = await fetch(url, {
+      const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${jwtToken}` },
       });
 
-      if (!response.ok) throw new Error("Network response was not ok");
-      const result = await response.json();
-
-      setData(result);
+      setData(response.data.data);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -26,7 +24,7 @@ function useFetch(url, jwtToken) {
   useFocusEffect(
     useCallback(() => {
       if (jwtToken) fetchData(url);
-      [jwtToken];
+      [];
     })
   );
 
