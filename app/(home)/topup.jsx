@@ -41,7 +41,7 @@ export default function Topup() {
 
   const onPress = async () => {
     try {
-      const response = await fetch("http://10.237.11.158:8080/topup", {
+      const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/topup`, {
         method: "PATCH",
         headers: {
           Accept: "application/json",
@@ -50,6 +50,10 @@ export default function Topup() {
         },
         body: JSON.stringify({ amount }),
       });
+
+      if (response.status === 200) {
+        setAmount(0);
+      }
     } catch (error) {
       console.error(error);
     }

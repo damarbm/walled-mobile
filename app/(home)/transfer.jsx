@@ -45,7 +45,7 @@ function LogoTitle() {
 export default function Transfer() {
   const [jwtToken, setJwtToken] = useState("");
   const { data: profile } = useFetch(
-    "http://10.237.11.158:8080/profile",
+    `${process.env.EXPO_PUBLIC_API_URL}/profile`,
     jwtToken
   );
 

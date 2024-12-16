@@ -76,11 +76,11 @@ export default function Home() {
   const [showBalance, setShowBalance] = useState(true);
   const [jwtToken, setJwtToken] = useState("");
   const { data: transactions } = useFetch(
-    "http://10.237.11.158:8080/transactions",
+    `${process.env.EXPO_PUBLIC_API_URL}/transactions`,
     jwtToken
   );
   const { data: profile } = useFetch(
-    "http://10.237.11.158:8080/profile",
+    `${process.env.EXPO_PUBLIC_API_URL}/profile`,
     jwtToken
   );
 
