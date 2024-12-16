@@ -1,10 +1,14 @@
 import { Text, TouchableOpacity, StyleSheet } from "react-native";
 
-export default function Button({ text, bgColor = "#19918F", onPress }) {
+export default function Button({
+  text,
+  bgColor = "#19918F",
+  handlePress = () => {},
+}) {
   return (
     <TouchableOpacity
       style={{ ...styles.button, backgroundColor: bgColor }}
-      onPress={onPress}
+      onPress={handlePress}
     >
       <Text style={styles.buttonText}>{text}</Text>
     </TouchableOpacity>

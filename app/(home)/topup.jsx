@@ -39,7 +39,7 @@ export default function Topup() {
   const [amount, setAmount] = useState(0);
   const [jwtToken, setJwtToken] = useState("");
 
-  const onPress = async () => {
+  const handleTopUp = async () => {
     try {
       const response = await fetch(`${process.env.EXPO_PUBLIC_API_URL}/topup`, {
         method: "PATCH",
@@ -79,7 +79,7 @@ export default function Topup() {
       <AmountInput amount={amount} setAmount={setAmount} />
       <NoteInput label="Note" marginTop={28} />
       <View style={styles.buttonWrapper}>
-        <Button text="Top Up" onPress={onPress} />
+        <Button text="Top Up" handlePress={handleTopUp} />
       </View>
     </View>
   );

@@ -2,14 +2,21 @@ import { useState } from "react";
 import { Image, StyleSheet, Text, TextInput, View } from "react-native";
 import { Link, useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { z } from "zod";
 
 import Button from "../components/Button";
 
+const LOGIN_SCHEMA = z.object({
+  email: z.string().email({ message: "Invalid email address" }),
+  password: z.string().min(8, { message: "Must be 8 or more characters long" }),
+});
+
 export default function Index() {
-  const [loginData, setLoginData] = useState({
+  const [loginForm, setLoginForm] = useState({
     email: "",
     password: "",
   });
+  const [errors, setErrors] = useState({ email: "", password: "" });
   const router = useRouter();
 
   const storeData = async (value) => {
@@ -21,11 +28,20 @@ export default function Index() {
   };
 
   const onChangeText = (state, value) => {
-    setLoginData({ ...loginData, [state]: value });
+    setLoginForm({ ...loginForm, [state]: value });
+
+    try {
+      LOGIN_SCHEMA.pick({ [state]: true }).parse({ [state]: value });
+      setErrors((prev) => ({ ...prev, [state]: "" }));
+    } catch (error) {
+      setErrors((prev) => ({ ...prev, [state]: error.errors[0].message }));
+    }
   };
 
-  const onPress = async () => {
+  const handleSubmit = async () => {
     try {
+      LOGIN_SCHEMA.parse(loginForm);
+
       const response = await fetch(
         `${process.env.EXPO_PUBLIC_API_URL}/auth/login`,
         {
@@ -34,7 +50,7 @@ export default function Index() {
             Accept: "application/json",
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(loginData),
+          body: JSON.stringify(loginForm),
         }
       );
 
@@ -56,6 +72,7 @@ export default function Index() {
         justifyContent: "center",
         alignItems: "center",
         height: "100%",
+        backgroundColor: "#ffffff",
       }}
     >
       <Image
@@ -64,24 +81,34 @@ export default function Index() {
         style={styles.logo}
       />
       <View style={styles.inputWrapper}>
-        <TextInput
-          style={styles.input}
-          value={loginData.email}
-          onChangeText={(value) => onChangeText("email", value)}
-          placeholder="Email"
-          keyboardType="email-address"
-          autoCapitalize="none"
-        />
-        <TextInput
-          style={styles.input}
-          value={loginData.password}
-          onChangeText={(value) => onChangeText("password", value)}
-          placeholder="Password"
-          secureTextEntry
-        />
+        <View>
+          <TextInput
+            style={styles.input}
+            value={loginForm.email}
+            onChangeText={(value) => onChangeText("email", value)}
+            placeholder="Email"
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+          {errors.email && (
+            <Text style={styles.errorMessage}>{errors.email}</Text>
+          )}
+        </View>
+        <View>
+          <TextInput
+            style={styles.input}
+            value={loginForm.password}
+            onChangeText={(value) => onChangeText("password", value)}
+            placeholder="Password"
+            secureTextEntry
+          />
+          {errors.password && (
+            <Text style={styles.errorMessage}>{errors.password}</Text>
+          )}
+        </View>
       </View>
       <View style={{ width: "90%", marginTop: 54 }}>
-        <Button text="Login" onPress={onPress} />
+        <Button text="Login" handlePress={handleSubmit} />
       </View>
       <View style={{ width: "90%", marginTop: 16 }}>
         <Text>
@@ -128,5 +155,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: 700,
     fontSize: 16,
+  },
+  errorMessage: {
+    color: "red",
   },
 });

@@ -47,7 +47,6 @@ function LogoTitle({ name, avatar }) {
         flexDirection: "row",
         justifyContent: "space-between",
         paddingVertical: 12,
-        boxShadow: "0px 4px 10px 0px #D1D1D140",
         width: "100%",
       }}
     >
