@@ -24,8 +24,7 @@ function useFetch(url, jwtToken) {
   useFocusEffect(
     useCallback(() => {
       if (jwtToken) fetchData(url);
-      [];
-    })
+    }, [])
   );
 
   return { data, loading, error };
