@@ -7,7 +7,7 @@ function useFetch(url, jwtToken) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const fetchData = async (url) => {
+  const fetchData = async () => {
     try {
       const response = await axios.get(url, {
         headers: { Authorization: `Bearer ${jwtToken}` },
@@ -24,10 +24,10 @@ function useFetch(url, jwtToken) {
   useFocusEffect(
     useCallback(() => {
       if (jwtToken) fetchData(url);
-    }, [])
+    }, [jwtToken])
   );
 
-  return { data, loading, error };
+  return { data, loading, error, fetchData };
 }
 
 export default useFetch;
