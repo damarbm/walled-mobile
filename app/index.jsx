@@ -3,6 +3,7 @@ import { Image, StyleSheet, Text, TextInput, View } from "react-native";
 import { Link, useRouter } from "expo-router";
 import { z } from "zod";
 import axios from "axios";
+import * as SecureStore from "expo-secure-store";
 
 import Button from "../components/Button";
 import { saveSecureStore } from "../utils";
@@ -57,15 +58,7 @@ export default function Index() {
   };
 
   return (
-    <View
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100%",
-        backgroundColor: "#ffffff",
-      }}
-    >
+    <View style={styles.container}>
       <Image
         resizeMode="stretch"
         source={require("../assets/logo.png")}
@@ -115,6 +108,13 @@ export default function Index() {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "100%",
+    backgroundColor: "#FFFFFF",
+  },
   logo: {
     marginBottom: 100,
     width: 233,
