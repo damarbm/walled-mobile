@@ -85,8 +85,14 @@ export default function Transfer() {
     }
   };
 
+  const getToken = async () => {
+    const result = await getSecureStore("token");
+
+    setJwtToken(result);
+  };
+
   useEffect(() => {
-    getSecureStore("token", setJwtToken);
+    getToken();
   }, []);
 
   return (

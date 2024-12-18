@@ -4,10 +4,10 @@ export const saveSecureStore = async (key, value) => {
   await SecureStore.setItemAsync(key, value);
 };
 
-export const getSecureStore = async (key, setState) => {
+export const getSecureStore = async (key) => {
   let result = await SecureStore.getItemAsync(key);
 
   if (result) {
-    setState(result);
+    return result;
   }
 };

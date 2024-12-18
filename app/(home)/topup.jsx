@@ -72,8 +72,14 @@ export default function Topup() {
     }
   };
 
+  const getToken = async () => {
+    const result = await getSecureStore("token");
+
+    setJwtToken(result)
+  }
+
   useEffect(() => {
-    getSecureStore("token", setJwtToken);
+    getToken();
   }, []);
 
   return (

@@ -124,6 +124,12 @@ export default function Home() {
     setShowBalance((prev) => !prev);
   };
 
+  const getToken = async () => {
+    const result = await getSecureStore("token");
+
+    setJwtToken(result);
+  };
+
   const onRefresh = useCallback(() => {
     fetchTransactions();
     fetchProfile();
@@ -134,7 +140,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    getSecureStore("token", setJwtToken);
+    getToken();
   }, []);
 
   return (
