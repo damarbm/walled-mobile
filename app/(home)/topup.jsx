@@ -8,8 +8,9 @@ import NoteInput from "../../components/NoteInput";
 import AmountInput from "../../components/AmountInput";
 import Button from "../../components/Button";
 import { getSecureStore } from "../../utils";
+import { useThemeColors } from "../../hooks/useThemeColors";
 
-function LogoTitle() {
+function Header({ colors }) {
   const router = useRouter();
 
   return (
@@ -22,14 +23,20 @@ function LogoTitle() {
       }}
     >
       <TouchableOpacity
-        style={{ color: "black" }}
         onPress={() => {
           router.replace(-1);
         }}
       >
-        <Feather name="chevron-left" size={28} color="black" />
+        <Feather name="chevron-left" size={28} color={colors.text} />
       </TouchableOpacity>
-      <Text style={{ fontWeight: 700, fontSize: 16, marginLeft: 16 }}>
+      <Text
+        style={{
+          fontWeight: 700,
+          fontSize: 16,
+          marginLeft: 16,
+          color: colors.text,
+        }}
+      >
         Top Up
       </Text>
     </View>
@@ -38,13 +45,15 @@ function LogoTitle() {
 
 export default function Topup() {
   const [amount, setAmount] = useState(0);
+  const [desc, setDesc] = useState("");
   const [jwtToken, setJwtToken] = useState("");
+  const colors = useThemeColors();
 
   const handleTopUp = async () => {
     try {
-      const response = await axios.patch(
-        `${process.env.EXPO_PUBLIC_API_URL}/topup`,
-        { amount },
+      const response = await axios.post(
+        `${process.env.EXPO_PUBLIC_API_URL}/transactions/topup`,
+        { amount, desc },
         {
           headers: {
             Accept: "application/json",
@@ -56,6 +65,7 @@ export default function Topup() {
 
       if (response.status === 200) {
         setAmount(0);
+        setDesc("");
       }
     } catch (error) {
       console.error(error.response.data);
@@ -67,20 +77,26 @@ export default function Topup() {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <View style={{...styles.container,  backgroundColor: colors.background }}>
       <Stack.Screen
         options={{
-          headerStyle: { backgroundColor: "#ffffff" },
+          headerStyle: { backgroundColor: colors.card },
           headerTintColor: "#fff",
           headerTitleStyle: {
             fontWeight: "bold",
           },
           headerBackImageSource: true,
-          headerTitle: (props) => <LogoTitle {...props} />,
+          headerTitle: (props) => <Header {...props} colors={colors} />,
         }}
       />
-      <AmountInput amount={amount} setAmount={setAmount} />
-      <NoteInput label="Note" marginTop={28} />
+      <AmountInput amount={amount} setAmount={setAmount} colors={colors} />
+      <NoteInput
+        label="Note"
+        marginTop={28}
+        desc={desc}
+        setDesc={setDesc}
+        colors={colors}
+      />
       <View style={styles.buttonWrapper}>
         <Button text="Top Up" handlePress={handleTopUp} />
       </View>

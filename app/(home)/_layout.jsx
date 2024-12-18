@@ -2,10 +2,20 @@ import FontAwesome from "@expo/vector-icons/FontAwesome";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Entypo from "@expo/vector-icons/Entypo";
 import { Tabs } from "expo-router";
+import { useThemeColors } from "../../hooks/useThemeColors";
 
 export default function TabLayout() {
+  const colors = useThemeColors();
+
   return (
-    <Tabs screenOptions={{ tabBarActiveTintColor: "#19918F" }}>
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: "#19918F",
+        tabBarStyle: {
+          backgroundColor: colors.background,
+        },
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{

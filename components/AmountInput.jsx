@@ -5,17 +5,18 @@ export default function AmountInput({
   balance,
   amount,
   setAmount,
+  colors,
 }) {
   return (
-    <View style={styles.amountWrapper}>
+    <View style={{ ...styles.amountWrapper, backgroundColor: colors.card }}>
       <Text style={styles.label}>Amount</Text>
       <View style={styles.inputWrapper}>
-        <Text style={styles.currency}>IDR</Text>
+        <Text style={{ ...styles.currency, color: colors.text }}>IDR</Text>
         <TextInput
           keyboardType="numeric"
           value={amount}
           onChangeText={setAmount}
-          style={styles.input}
+          style={{ ...styles.input, color: colors.text }}
         />
       </View>
       {isTransfer && (

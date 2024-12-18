@@ -1,10 +1,22 @@
 import { TextInput, View, StyleSheet, Text } from "react-native";
 
-export default function NoteInput({ label = "Input", marginTop }) {
+export default function NoteInput({
+  label = "Input",
+  marginTop,
+  desc,
+  setDesc,
+  colors,
+}) {
   return (
-    <View style={{ ...styles.container, marginTop }}>
+    <View
+      style={{ ...styles.container, marginTop, backgroundColor: colors.card }}
+    >
       <Text style={styles.label}>{label}</Text>
-      <TextInput style={styles.input} />
+      <TextInput
+        style={{ ...styles.input, color: colors.text }}
+        value={desc}
+        onChangeText={setDesc}
+      />
     </View>
   );
 }
