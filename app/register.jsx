@@ -2,11 +2,43 @@ import { Image, StyleSheet, Text, TextInput, View } from "react-native";
 import { Link } from "expo-router";
 import { useState } from "react";
 import Checkbox from "expo-checkbox";
+import axios from "axios";
 
 import Button from "../components/Button";
 
 export default function Register() {
+  const [registerData, setRegisterData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    avatar_url: "",
+  });
   const [isChecked, setChecked] = useState(false);
+
+  const handleInputChange = (key, value) => {
+    setRegisterData({ ...registerData, [key]: value });
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const response = await axios.post(
+        `${process.env.EXPO_PUBLIC_API_URL}/auth/register`,
+        registerData,
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        router.replace("/");
+      }
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
 
   return (
     <View>
@@ -30,21 +62,29 @@ export default function Register() {
             style={styles.input}
             placeholder="Fullname"
             keyboardType="default"
+            value={registerData.name}
+            onChangeText={(value) => handleInputChange("name", value)}
           />
           <TextInput
             style={styles.input}
             placeholder="Email"
             keyboardType="email-address"
+            value={registerData.email}
+            onChangeText={(value) => handleInputChange("email", value)}
           />
           <TextInput
             style={styles.input}
             placeholder="Password"
+            value={registerData.password}
+            onChangeText={(value) => handleInputChange("password", value)}
             secureTextEntry
           />
           <TextInput
             style={styles.input}
             placeholder="Avatar Url"
             keyboardType="default"
+            value={registerData.avatar_url}
+            onChangeText={(value) => handleInputChange("avatar_url", value)}
           />
         </View>
         <View style={styles.checkboxWrapper}>
@@ -61,7 +101,7 @@ export default function Register() {
           </Text>
         </View>
         <View style={{ marginTop: 16 }}>
-          <Button text="Register" />
+          <Button text="Register" handlePress={handleSubmit} />
         </View>
         <View style={{ width: "100%", marginTop: 16 }}>
           <Text>
